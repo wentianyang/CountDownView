@@ -56,9 +56,9 @@ class CountDownView : View {
     }
 
   private var mPaddingLeft: Float = 0f.dp2px()
-  private var mPaddingTop: Float = 10f.dp2px()
+  private var mPaddingTop: Float = 0f.dp2px()
   private var mPaddingRight: Float = 0f.dp2px()
-  private var mPaddingBottom: Float = 10f.dp2px()
+  private var mPaddingBottom: Float = 0f.dp2px()
 
   private var mSuffixMargin: Float = 10f.dp2px()
 

@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
   private fun startCount() {
     Log.d("MainActivity", "real time is ${SystemClock.uptimeMillis()}")
-    countdown(1569957140000 - System.currentTimeMillis())
+    countdown(1570026349000 - System.currentTimeMillis())
   }
 
   fun countdown(currTime: Long) = run { findViewById<CountDownView>(R.id.count_down).start(currTime) }
