@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CountDownView">
+        <attr name="showHour" format="boolean" />
+        <attr name="showMinute" format="boolean" />
+        <attr name="showSecond" format="boolean" />
+        <attr name="showBorder" format="boolean" />
+    </declare-styleable>
+</resources>
