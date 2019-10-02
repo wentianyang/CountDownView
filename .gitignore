@@ -16,7 +16,3 @@
 .cxx
 libs/
 /.idea/
-/.idea/gradle.xml
-/.idea/runConfigurations.xml
-/.idea/misc.xml
-/.idea/vcs.xml
