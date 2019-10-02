@@ -98,7 +98,11 @@ class CountDownView : View {
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
+  }
 
+  override fun onDetachedFromWindow() {
+    super.onDetachedFromWindow()
+    job.complete()
   }
 
   constructor(context: Context) : this(context, null)
@@ -156,7 +160,7 @@ class CountDownView : View {
   }
 
   private fun timeTextHeight(text: String = DEFAULT_TIME_TEXT): Int {
-    return mTimeBounds.height()
+    return mTimeBounds.height() + mPaddingTop.toInt() + mPaddingBottom.toInt()
   }
 
   private fun timeTextWidth(text: String = DEFAULT_TIME_TEXT): Int {
@@ -178,7 +182,7 @@ class CountDownView : View {
     mBorderRect.left = x.toInt()
     mBorderRect.top = (0 + mBorderWidth / 2).toInt()
     mBorderRect.right = (mBorderRect.left + timeTextWidth() + mBorderWidth.toInt() + mTimeBounds.left + mPaddingLeft.toInt() + mPaddingRight.toInt())
-    mBorderRect.bottom = (height / 2 - timeTextHeightFont() / 2f + mBorderWidth).toInt()
+    mBorderRect.bottom = (height / 2 - timeTextHeightFont() / 2f + mBorderWidth + mPaddingTop.toInt()).toInt()
     canvas.drawRect(mBorderRect, mBorderPaint)
   }
 
