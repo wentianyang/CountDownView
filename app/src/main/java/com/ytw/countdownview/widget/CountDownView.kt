@@ -16,7 +16,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlin.math.floor
 
 /**
  * @Author: Ytw
@@ -56,9 +55,9 @@ class CountDownView : View {
       }
     }
 
-  private var mPaddingLeft: Float = 10f.dp2px()
+  private var mPaddingLeft: Float = 0f.dp2px()
   private var mPaddingTop: Float = 10f.dp2px()
-  private var mPaddingRight: Float = 10f.dp2px()
+  private var mPaddingRight: Float = 0f.dp2px()
   private var mPaddingBottom: Float = 10f.dp2px()
 
   private var mSuffixMargin: Float = 10f.dp2px()
@@ -145,7 +144,7 @@ class CountDownView : View {
   }
 
   private fun getContentWidth(): Float {
-    return (floor(timeTextWidth().toFloat()) * 3 + floor(mBorderWidth) * 6 + floor(mTimeBounds.left.toFloat()) * 3).toFloat()
+    return ((timeTextWidth() + mPaddingLeft.toInt() + mPaddingRight.toInt()) * 3 + mBorderWidth.toInt() * 6 + mTimeBounds.left * 3).toFloat()
   }
 
   private fun getContentHeight(): Float {
@@ -172,13 +171,13 @@ class CountDownView : View {
 
 
   private fun drawText(canvas: Canvas, text: String, x: Float) {
-    canvas.drawText(text, x - mTimeBounds.left, textBaseLine(), mTimePaint)
+    canvas.drawText(text, x - mTimeBounds.left + mPaddingLeft, textBaseLine(), mTimePaint)
   }
 
   private fun drawBorder(canvas: Canvas, x: Float) {
     mBorderRect.left = x.toInt()
     mBorderRect.top = (0 + mBorderWidth / 2).toInt()
-    mBorderRect.right = (mBorderRect.left + timeTextWidth() + mBorderWidth + mTimeBounds.left).toInt()
+    mBorderRect.right = (mBorderRect.left + timeTextWidth() + mBorderWidth.toInt() + mTimeBounds.left + mPaddingLeft.toInt() + mPaddingRight.toInt())
     mBorderRect.bottom = (height / 2 - timeTextHeightFont() / 2f + mBorderWidth).toInt()
     canvas.drawRect(mBorderRect, mBorderPaint)
   }
