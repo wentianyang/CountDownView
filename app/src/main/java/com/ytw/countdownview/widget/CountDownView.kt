@@ -64,6 +64,7 @@ class CountDownView : View {
 
   private var mBorderRect: Rect = Rect()
   private val mTimeBounds: Rect = Rect()
+  private val mSuffixBounds: Rect = Rect()
 
   private var mSuffixSize = DEFAULT_SUFFIX_SIZE
   private var mTimeTextSize = DEFAULT_TIME_TEXT_SIZE
@@ -94,6 +95,7 @@ class CountDownView : View {
 
   init {
     mTimePaint.getTextBounds(DEFAULT_TIME_TEXT, 0, DEFAULT_TIME_TEXT.length, mTimeBounds)
+    mSuffixPaint.getTextBounds(DEFAULT_SUFFIX, 0, DEFAULT_SUFFIX.length, mSuffixBounds)
   }
 
   override fun onAttachedToWindow() {
@@ -119,6 +121,7 @@ class CountDownView : View {
     mShowMinute = typedArray.getBoolean(R.styleable.CountDownView_showMinute, true)
     mShowSecond = typedArray.getBoolean(R.styleable.CountDownView_showSecond, true)
     mShowBorder = typedArray.getBoolean(R.styleable.CountDownView_showBorder, true)
+    typedArray.recycle()
   }
 
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -141,14 +144,18 @@ class CountDownView : View {
     canvas.drawLine(0f, (height / 2).toFloat(), width.toFloat(), (height / 2).toFloat() + 1f.dp2px(), mBorderPaint)
     drawBorder(canvas, mBorderWidth / 2)
     drawText(canvas, formatTime(mHour), mBorderRect.left + mBorderWidth / 2)
-    drawBorder(canvas, mBorderRect.right.toFloat() + mBorderWidth)
+    drawSuffix(canvas, mBorderRect.right + mBorderWidth / 2 + mSuffixMargin.toInt() - mSuffixBounds.left)
+
+    drawBorder(canvas, mBorderRect.right + mBorderWidth + mSuffixMargin.toInt() * 2 + mSuffixBounds.width())
     drawText(canvas, formatTime(mMinute), mBorderRect.left + mBorderWidth / 2)
-    drawBorder(canvas, mBorderRect.right.toFloat() + mBorderWidth)
+    drawSuffix(canvas, mBorderRect.right + mBorderWidth / 2 + mSuffixMargin.toInt() - mSuffixBounds.left)
+
+    drawBorder(canvas, mBorderRect.right + mBorderWidth + mSuffixMargin.toInt() * 2 + mSuffixBounds.width())
     drawText(canvas, formatTime(mSecond), mBorderRect.left + mBorderWidth / 2)
   }
 
   private fun getContentWidth(): Float {
-    return ((timeTextWidth() + mPaddingLeft.toInt() + mPaddingRight.toInt()) * 3 + mBorderWidth.toInt() * 6 + mTimeBounds.left * 3).toFloat()
+    return ((timeTextWidth() + mPaddingLeft.toInt() + mPaddingRight.toInt()) * 3 + mSuffixMargin.toInt() * 4 + mBorderWidth.toInt() * 6 + mTimeBounds.left * 3 + mSuffixBounds.width() * 2).toFloat()
   }
 
   private fun getContentHeight(): Float {
@@ -159,20 +166,27 @@ class CountDownView : View {
     return ((height / 2f) - (timeTextHeightFont() / 2f))
   }
 
-  private fun timeTextHeight(text: String = DEFAULT_TIME_TEXT): Int {
+  private fun timeTextHeight(): Int {
     return mTimeBounds.height() + mPaddingTop.toInt() + mPaddingBottom.toInt()
   }
 
-  private fun timeTextWidth(text: String = DEFAULT_TIME_TEXT): Int {
+  private fun timeTextWidth(): Int {
     return mTimeBounds.width() - mTimeBounds.left
   }
 
   private fun timeTextHeightFont(): Float {
-    var fontMetrics = Paint.FontMetrics()
+    val fontMetrics = Paint.FontMetrics()
     mTimePaint.getFontMetrics(fontMetrics)
-    return (fontMetrics.ascent + fontMetrics.descent)
+    return fontMetrics.ascent + fontMetrics.descent
   }
 
+  private fun suffixWidth(): Int {
+    return mSuffixBounds.width() - mSuffixBounds.left
+  }
+
+  private fun drawSuffix(canvas: Canvas, x: Float) {
+    canvas.drawText(DEFAULT_SUFFIX, x, height / 2f + mSuffixBounds.height() / 2f, mSuffixPaint)
+  }
 
   private fun drawText(canvas: Canvas, text: String, x: Float) {
     canvas.drawText(text, x - mTimeBounds.left + mPaddingLeft, textBaseLine(), mTimePaint)
@@ -239,7 +253,7 @@ class CountDownView : View {
 
   private var mListener: Listener? = null
 
-  open interface Listener {
+  interface Listener {
     fun onTiming(currentTimeMillis: Long)
 
     fun onFinish()
